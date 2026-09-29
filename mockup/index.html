@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Mockup de referencia para la vitrina de productos del desafío Full Stack." />
+    <title>PASO - Vitrina de productos</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="PASO, inicio">
+        <span class="brand-mark">P</span>
+        <span>PASO</span>
+      </a>
+      <span class="header-note">CATÁLOGO DE SUPERMERCADO</span>
+    </header>
+
+    <main class="catalog-shell">
+      <section class="intro-row" aria-labelledby="catalog-title">
+        <div>
+          <p class="eyebrow">VITRINA / 4.032 PRODUCTOS</p>
+          <h1 id="catalog-title">Todo lo que necesitas, en un solo lugar</h1>
+          <p class="lead">Explora el catálogo, filtra por categoría o formato y revisa la información de cada producto.</p>
+        </div>
+        <span class="result-count" id="result-count">Mostrando 1-8 de 4.032</span>
+      </section>
+
+      <section class="toolbar" aria-label="Herramientas del catálogo">
+        <label class="search-field">
+          <span aria-hidden="true">⌕</span>
+          <span class="sr-only">Buscar productos</span>
+          <input id="search" type="search" placeholder="Buscar por nombre..." />
+        </label>
+        <div class="filters">
+          <label>
+            <span class="sr-only">Categoría</span>
+            <select id="category-filter">
+              <option value="">Todas las categorías</option>
+              <option value="Aceite, especias y salsas">Aceite, especias y salsas</option>
+              <option value="Agua y refrescos">Agua y refrescos</option>
+              <option value="Aperitivos">Aperitivos</option>
+              <option value="Azúcar, caramelos y chocolate">Azúcar, caramelos y chocolate</option>
+              <option value="Bodega">Bodega</option>
+              <option value="Cacao, café e infusiones">Cacao, café e infusiones</option>
+              <option value="Carne">Carne</option>
+              <option value="Huevos, leche y mantequilla">Huevos, leche y mantequilla</option>
+            </select>
+          </label>
+          <label>
+            <span class="sr-only">Formato</span>
+            <select id="format-filter">
+              <option value="">Todos los formatos</option>
+              <option value="6 mini bricks x 200 ml">6 mini bricks x 200 ml</option>
+              <option value="Bandeja">Bandeja</option>
+              <option value="Bote">Bote</option>
+              <option value="Botella">Botella</option>
+              <option value="Lata">Lata</option>
+              <option value="Paquete">Paquete</option>
+              <option value="Tarro">Tarro</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section class="product-grid" id="product-grid" aria-live="polite"></section>
+
+      <nav class="pagination" aria-label="Paginación de ejemplo">
+        <button type="button" disabled>← Anterior</button>
+        <div class="pages" aria-label="Página actual">
+          <span class="active">1</span><span>2</span><span>3</span><span>…</span><span>504</span>
+        </div>
+        <button type="button">Siguiente →</button>
+      </nav>
+
+      <section class="state-switch" aria-label="Referencia de estados de la interfaz">
+        <span class="state-switch-label">Referencia de estados</span>
+        <div class="state-switch-buttons" role="group">
+          <button type="button" data-state="normal" class="on">Normal</button>
+          <button type="button" data-state="cargando">Cargando</button>
+          <button type="button" data-state="vacio">Sin resultados</button>
+          <button type="button" data-state="error">Error</button>
+        </div>
+        <p class="state-switch-note">Así debería comportarse la grilla en cada caso. «Sin resultados» también aparece si buscas algo que no existe.</p>
+      </section>
+    </main>
+
+    <dialog class="product-dialog" id="product-dialog" aria-labelledby="detail-title">
+      <button class="dialog-close" id="dialog-close" type="button" aria-label="Cerrar detalle">×</button>
+      <div class="detail-grid">
+        <div class="detail-image"><img id="detail-image" alt="" /></div>
+        <div class="detail-copy">
+          <p class="eyebrow" id="detail-id"></p>
+          <h2 id="detail-title"></h2>
+          <p class="detail-lead" id="detail-description"></p>
+          <dl class="detail-list" id="detail-list"></dl>
+          <section class="product-commerce" aria-label="Precio y procedencia de los datos del producto">
+            <div class="price-summary">
+              <span class="commerce-label">Precio publicado</span>
+              <strong id="detail-price"></strong>
+              <p id="detail-currency"></p>
+            </div>
+            <div class="source-summary">
+              <span class="commerce-label">Dato original</span>
+              <p><strong id="detail-original-price"></strong></p>
+              <small id="detail-extracted-at"></small>
+              <a id="detail-source" href="#" target="_blank" rel="noopener noreferrer">Ver ficha de origen →</a>
+            </div>
+          </section>
+        </div>
+      </div>
+    </dialog>
+  </body>
+</html>
