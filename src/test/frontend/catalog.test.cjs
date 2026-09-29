@@ -61,7 +61,7 @@ function app(fetcher = (url, options) => fetch(new URL(url, base), options)) {
     nodes, requests, errors, context,
     async settle() {
       // Response body decoding and async event handlers need to complete too.
-      await Promise.all([...pending]);
+      await Promise.allSettled([...pending]);
       for (let i = 0; i < 10; i++) await new Promise(resolve => setTimeout(resolve, 10));
     },
     run: code => vm.runInContext(code, context),
@@ -106,7 +106,7 @@ test('navigation uses real metadata, last page and changing filters resets page'
   assert.ok(ui.nodes.get('#product-grid').children.length > 0);
   ui.nodes.get('#search').value = 'no-such-product-xyz';
   ui.nodes.get('#search').dispatch('input'); await ui.settle();
-  assert.equal(ui.nodes.get('#product-grid').children.length, 0);
+  assert.equal(ui.nodes.get('#product-grid').dataset.state, 'empty');
   assert.equal(ui.nodes.get('#next-page').disabled, true);
 });
 
@@ -160,8 +160,82 @@ test('older list and detail responses cannot overwrite the latest selection', as
 
 test('HTTP failures are visible and navigation stays disabled', async () => {
   const ui = app(async () => ({ok:false, status:500})); await ui.settle();
-  assert.match(ui.nodes.get('#result-count').textContent, /No pudimos/);
+  assert.equal(ui.nodes.get('#product-grid').dataset.state, 'error');
   assert.equal(ui.nodes.get('#next-page').disabled, true);
   assert.equal(ui.nodes.get('#category-filter').disabled, true);
   assert.equal(ui.errors.length, 2);
+});
+
+const response = value => ({ok:true, json:async () => value});
+const emptyPage = {items:[], page:0, size:8, totalElements:0, totalPages:0, hasPrevious:false, hasNext:false};
+const clickAction = node => node.all().find(child => child.tagName === 'button').dispatch('click');
+
+test('pending requests show loading; empty results allow clearing all filters', async () => {
+  let resolveList;
+  const ui = app(url => url.endsWith('/filters') ? Promise.resolve(response({categories:[], formats:[]})) : new Promise(resolve => { resolveList = resolve; }));
+  const grid = ui.nodes.get('#product-grid');
+  assert.equal(grid.dataset.state, 'loading');
+  assert.equal(grid.attributes['aria-busy'], 'true');
+  assert.equal(ui.nodes.get('#pagination').hidden, true);
+  ui.nodes.get('#search').value = 'missing';
+  ui.nodes.get('#category-filter').value = 'A';
+  ui.nodes.get('#format-filter').value = 'B';
+  resolveList(response(emptyPage)); await ui.settle();
+  assert.equal(grid.dataset.state, 'empty');
+  assert.equal(grid.attributes['aria-busy'], 'false');
+  clickAction(grid);
+  assert.equal(ui.requests.at(-1), '/api/products?page=0');
+  for (const id of ['search', 'category-filter', 'format-filter']) assert.equal(ui.nodes.get('#' + id).value, '');
+  resolveList(response(emptyPage)); await ui.settle();
+  assert.equal(grid.all().filter(node => node.tagName === 'button').length, 0);
+});
+
+test('network, HTTP, JSON and rendering errors offer retry preserving page and query', async () => {
+  for (const failure of [() => Promise.reject(new Error('offline')), async () => ({ok:false,status:503}),
+    async () => ({ok:true,json:async () => {throw new Error('invalid JSON');}}), async () => response({items:[{}]})]) {
+    let fail = true;
+    const ui = app(url => url.endsWith('/filters') ? Promise.resolve(response({categories:[],formats:[]})) : fail ? failure() : Promise.resolve(response(emptyPage)));
+    await ui.settle();
+    ui.nodes.get('#search').value = 'leche';
+    await ui.run('loadProducts(3)');
+    assert.equal(ui.nodes.get('#product-grid').dataset.state, 'error');
+    assert.equal(ui.nodes.get('#pagination').hidden, true);
+    fail = false; clickAction(ui.nodes.get('#product-grid')); await ui.settle();
+    assert.equal(ui.requests.at(-1), '/api/products?page=3&search=leche');
+    assert.equal(ui.nodes.get('#product-grid').dataset.state, 'empty');
+  }
+});
+
+test('filter failure can recover without duplicate options or losing the search', async () => {
+  let fail = true;
+  const ui = app(async url => url.endsWith('/filters') ? fail ? {ok:false,status:500} : response({categories:['A'],formats:['B']}) : response(emptyPage));
+  await ui.settle();
+  ui.nodes.get('#search').value = 'leche';
+  fail = false; clickAction(ui.nodes.get('#filter-status')); await ui.settle();
+  assert.equal(ui.nodes.get('#filter-status').hidden, true);
+  assert.equal(ui.nodes.get('#category-filter').disabled, false);
+  await ui.run('loadFilters()');
+  assert.equal(ui.nodes.get('#category-filter').children.length, 1);
+  assert.equal(ui.nodes.get('#search').value, 'leche');
+});
+
+test('detail loading, retry and closing a pending request preserve the catalog', async () => {
+  const queue = [];
+  const ui = app(url => url.includes('/12049.1') ? new Promise(resolve => queue.push(resolve)) : Promise.resolve(response(url.endsWith('/filters') ? {categories:[],formats:[]} : emptyPage)));
+  await ui.settle();
+  ui.run("openDetail('12049.1')");
+  assert.equal(ui.nodes.get('#product-dialog').open, true);
+  assert.equal(ui.nodes.get('#detail-content').hidden, true);
+  queue.shift()({ok:false,status:404}); await ui.settle();
+  clickAction(ui.nodes.get('#detail-status'));
+  assert.equal(ui.requests.at(-1), '/api/products/12049.1');
+  ui.nodes.get('#dialog-close').dispatch('click');
+  queue.shift()(response({id:'12049.1'})); await ui.settle();
+  assert.equal(ui.nodes.get('#product-dialog').open, false);
+  assert.equal(ui.nodes.get('#product-grid').dataset.state, 'empty');
+});
+
+test('demo controls are removed', () => {
+  assert.doesNotMatch(html, /state-switch|data-state=/);
+  assert.doesNotMatch(script, /PLANTILLAS|innerHTML/);
 });

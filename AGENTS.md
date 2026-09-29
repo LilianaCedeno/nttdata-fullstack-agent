@@ -33,7 +33,7 @@ Material original:
 
 El mockup representa una vitrina de productos.
 
-El frontend ya consulta el catálogo mediante la API. Los estados demostrativos permanecen pendientes de sustitución en la Etapa 7.
+El frontend consulta el catálogo mediante la API. La Etapa 7 conecta los estados reales de interfaz y elimina los controles demostrativos; está pendiente de revisión y aprobación humana.
 
 La aplicación final debe convertir este mockup en una aplicación Full Stack funcional.
 
@@ -473,7 +473,7 @@ Mostrar estado de error y opción:
 
 El diseño entregado debe conservarse en la medida de lo posible.
 
-La integración de datos reales está implementada en la Etapa 6, pendiente de revisión humana. Los estados demostrativos permanecen para la Etapa 7.
+La integración de datos reales de la Etapa 6 está aprobada y versionada. Los estados reales de la Etapa 7 están implementados y pendientes de revisión y aprobación humana.
 
 Durante la integración deberá:
 
@@ -698,7 +698,7 @@ Objetivos:
 
 Estado:
 
-IMPLEMENTADA / PENDIENTE DE REVISIÓN Y APROBACIÓN HUMANA
+APROBADA Y VERSIONADA
 
 Objetivos:
 
@@ -716,7 +716,7 @@ Objetivos:
 
 Estado:
 
-PENDIENTE
+IMPLEMENTADA / PENDIENTE DE REVISIÓN Y APROBACIÓN HUMANA
 
 Implementar y verificar:
 
@@ -1043,13 +1043,13 @@ IMPLEMENTAR TODO EL ROADMAP
 
 # 29. Situación actual
 
-El repositorio contiene el material original y las Etapas 1 a 5 aprobadas y versionadas por el equipo humano.
+El repositorio contiene el material original y las Etapas 1 a 6 aprobadas y versionadas por el equipo humano.
 
-La Etapa 6 — Integración frontend está implementada y pendiente de revisión y aprobación humana. Las pruebas automatizadas fueron ejecutadas; la verificación visual en escritorio y móvil está pendiente por falta de un navegador conectado en el entorno.
+La Etapa 7 — Estados de interfaz está implementada y pendiente de revisión y aprobación humana. Pasaron 87 pruebas Java y 11 pruebas de frontend, incluyendo estados, reintentos y limpieza de filtros. La verificación visual en escritorio y móvil permanece pendiente: el inventario del entorno no muestra navegadores conectados.
 
-Las Etapas 7 a 9 permanecen pendientes y no están autorizadas en la tarea actual.
+Las Etapas 8 y 9 permanecen pendientes y no están autorizadas en la tarea actual.
 
-El trabajo se detiene con el reporte de la Etapa 6 para revisión y aprobación humana, sin avanzar a la Etapa 7.
+El trabajo se detiene con el reporte de la Etapa 7 para revisión y aprobación humana, sin avanzar a la Etapa 8.
 
 ---
 

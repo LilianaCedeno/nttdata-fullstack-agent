@@ -47,32 +47,25 @@
             </select>
           </label>
         </div>
+        <button id="clear-filters" type="button" disabled>Limpiar filtros</button>
       </section>
+      <div id="filter-status" hidden></div>
 
       <section class="product-grid" id="product-grid" aria-live="polite"></section>
 
-      <nav class="pagination" aria-label="Paginación del catálogo">
+      <nav id="pagination" hidden class="pagination" aria-label="Paginación del catálogo">
         <button id="previous-page" type="button" disabled>← Anterior</button>
         <div class="pages" aria-label="Página actual">
         </div>
         <button id="next-page" type="button" disabled>Siguiente →</button>
       </nav>
 
-      <section class="state-switch" aria-label="Referencia de estados de la interfaz">
-        <span class="state-switch-label">Referencia de estados</span>
-        <div class="state-switch-buttons" role="group">
-          <button type="button" data-state="normal" class="on">Normal</button>
-          <button type="button" data-state="cargando">Cargando</button>
-          <button type="button" data-state="vacio">Sin resultados</button>
-          <button type="button" data-state="error">Error</button>
-        </div>
-        <p class="state-switch-note">Así debería comportarse la grilla en cada caso. «Sin resultados» también aparece si buscas algo que no existe.</p>
-      </section>
     </main>
 
     <dialog class="product-dialog" id="product-dialog" aria-labelledby="detail-title">
       <button class="dialog-close" id="dialog-close" type="button" aria-label="Cerrar detalle">×</button>
-      <div class="detail-grid">
+      <div id="detail-status" hidden></div>
+      <div id="detail-content" class="detail-grid">
         <div class="detail-image"><img id="detail-image" alt="" /></div>
         <div class="detail-copy">
           <p class="eyebrow" id="detail-id"></p>

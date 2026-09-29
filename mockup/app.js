@@ -10,6 +10,47 @@ const pages = document.querySelector('.pages');
 let currentPage = null;
 let listRequest = 0;
 let detailRequest = 0;
+let requestedPage = 0;
+let filtersReady = false;
+const pagination = document.querySelector('#pagination');
+const clearFilters = document.querySelector('#clear-filters');
+const filterStatus = document.querySelector('#filter-status');
+const detailStatus = document.querySelector('#detail-status');
+const detailContent = document.querySelector('#detail-content');
+
+function statePanel(state, title, message, action, callback) {
+  const panel = element('div', `inline-state ${state}`);
+  panel.setAttribute('role', state === 'error' ? 'alert' : 'status');
+  const icon = element('span', state === 'loading' ? 'state-icon spinner' : 'state-icon', state === 'error' ? '!' : '⌕');
+  icon.setAttribute('aria-hidden', 'true');
+  panel.append(icon, element('strong', '', title), element('p', '', message));
+  if (action) {
+    const button = element('button', '', action);
+    button.type = 'button';
+    button.addEventListener('click', callback);
+    panel.append(button);
+  }
+  return panel;
+}
+
+function hasFilters() {
+  return Boolean(search.value || categoryFilter.value || formatFilter.value);
+}
+
+function resetFilters() {
+  search.value = categoryFilter.value = formatFilter.value = '';
+  loadProducts(0);
+}
+
+function setListState(state) {
+  grid.dataset.state = state;
+  grid.setAttribute('aria-busy', String(state === 'loading'));
+  pagination.hidden = state !== 'success';
+  if (state !== 'success') {
+    previous.disabled = next.disabled = true;
+    pages.replaceChildren();
+  }
+}
 
 function element(tag, className, text) {
   const node = document.createElement(tag);
@@ -100,31 +141,50 @@ function renderPage(data) {
 
 async function loadProducts(page = 0) {
   const request = ++listRequest;
+  requestedPage = page;
+  currentPage = null;
+  clearFilters.disabled = !hasFilters();
+  setListState('loading');
   const params = new URLSearchParams({ page: String(page) });
   for (const [key, value] of [['search', search.value], ['category', categoryFilter.value], ['format', formatFilter.value]]) {
     if (value) params.set(key, value);
   }
   previous.disabled = next.disabled = true;
   pages.replaceChildren();
-  grid.replaceChildren();
+  grid.replaceChildren(statePanel('loading', 'Cargando productos', 'Espera mientras consultamos el catálogo.'));
   resultCount.textContent = '';
   try {
     const data = await getJson(`/api/products?${params}`);
     if (request !== listRequest) return;
     renderPage(data);
     currentPage = data;
+    setListState(data.items.length ? 'success' : 'empty');
+    if (!data.items.length) {
+      grid.replaceChildren(statePanel('empty', 'Sin resultados', 'Prueba con otra búsqueda o elimina algunos filtros.',
+        hasFilters() ? 'Limpiar filtros' : null, resetFilters));
+    }
   } catch (error) {
     if (request !== listRequest) return;
     currentPage = null;
-    resultCount.textContent = 'No pudimos consultar el catálogo.';
+    setListState('error');
+    resultCount.textContent = '';
+    grid.replaceChildren(statePanel('error', 'No pudimos cargar el catálogo', 'Inténtalo nuevamente en unos momentos.',
+      'Reintentar', () => loadProducts(requestedPage)));
     console.error(error);
   }
 }
 
 async function loadFilters() {
+  if (filtersReady) return;
   categoryFilter.disabled = formatFilter.disabled = true;
+  filterStatus.hidden = false;
+  filterStatus.replaceChildren(statePanel('loading', 'Cargando filtros', 'Espera mientras consultamos las opciones.'));
   try {
     const data = await getJson('/api/products/filters');
+    if (!Array.isArray(data.categories) || !Array.isArray(data.formats) ||
+        ![...data.categories, ...data.formats].every(value => typeof value === 'string')) {
+      throw new Error('Respuesta de filtros inválida');
+    }
     for (const [select, values] of [[categoryFilter, data.categories], [formatFilter, data.formats]]) {
       for (const value of values) {
         const option = element('option', '', value);
@@ -132,17 +192,25 @@ async function loadFilters() {
         select.append(option);
       }
     }
+    filtersReady = true;
     categoryFilter.disabled = formatFilter.disabled = false;
+    filterStatus.replaceChildren();
+    filterStatus.hidden = true;
   } catch (error) {
-    const message = element('p', '', 'No pudimos consultar los filtros. Recarga la página.');
-    message.setAttribute('role', 'alert');
-    document.querySelector('.toolbar').after(message);
+    filterStatus.replaceChildren(statePanel('error', 'No pudimos cargar los filtros', 'Puedes seguir buscando por nombre.',
+      'Reintentar', loadFilters));
     console.error(error);
   }
 }
 
 async function openDetail(id) {
   const request = ++detailRequest;
+  detailContent.hidden = true;
+  detailStatus.hidden = false;
+  dialog.setAttribute('aria-label', 'Detalle del producto');
+  dialog.removeAttribute('aria-labelledby');
+  detailStatus.replaceChildren(statePanel('loading', 'Cargando detalle', 'Espera mientras consultamos el producto.'));
+  if (!dialog.open) dialog.showModal();
   try {
     const product = await getJson(`/api/products/${encodeURIComponent(id)}`);
     if (request !== detailRequest) return;
@@ -166,10 +234,15 @@ async function openDetail(id) {
     source.hidden = !url;
     if (url) source.href = url;
     else source.removeAttribute('href');
-    if (!dialog.open) dialog.showModal();
+    detailContent.hidden = false;
+    detailStatus.hidden = true;
+    detailStatus.replaceChildren();
+    dialog.setAttribute('aria-labelledby', 'detail-title');
+    dialog.removeAttribute('aria-label');
   } catch (error) {
     if (request !== detailRequest) return;
-    resultCount.textContent = 'No pudimos consultar el detalle del producto.';
+    detailStatus.replaceChildren(statePanel('error', 'No pudimos cargar el detalle', 'Inténtalo nuevamente en unos momentos.',
+      'Reintentar', () => openDetail(id)));
     console.error(error);
   }
 }
@@ -186,42 +259,6 @@ search.addEventListener('input', () => loadProducts(0));
 previous.addEventListener('click', () => { if (currentPage?.hasPrevious) loadProducts(currentPage.page - 1); });
 next.addEventListener('click', () => { if (currentPage?.hasNext) loadProducts(currentPage.page + 1); });
 
-const PLANTILLAS = {
-  cargando: `
-    <div class="inline-state">
-      <span class="state-icon spinner" aria-hidden="true"></span>
-      <strong>Cargando productos</strong>
-      <p>Espera mientras consultamos el catálogo.</p>
-    </div>`,
-  vacio: `
-    <div class="inline-state empty">
-      <span class="state-icon" aria-hidden="true">⌕</span>
-      <strong>Sin resultados</strong>
-      <p>Prueba con otra búsqueda o elimina algunos filtros.</p>
-      <button type="button">Limpiar filtros</button>
-    </div>`,
-  error: `
-    <div class="inline-state error">
-      <span class="state-icon" aria-hidden="true">!</span>
-      <strong>No pudimos cargar el catálogo</strong>
-      <p>Inténtalo nuevamente en unos momentos.</p>
-      <button type="button">Reintentar</button>
-    </div>`,
-};
-
-// Demo controls remain until Stage 7 replaces them with the full real-state flow.
-document.querySelectorAll('.state-switch-buttons button').forEach(button => {
-  button.addEventListener('click', () => {
-    document.querySelectorAll('.state-switch-buttons button').forEach(item => item.classList.remove('on'));
-    button.classList.add('on');
-    if (button.dataset.state === 'normal') { loadProducts(0); return; }
-    listRequest++;
-    previous.disabled = next.disabled = true;
-    pages.replaceChildren();
-    // Static mockup templates only; catalog data is always inserted as text.
-    grid.innerHTML = PLANTILLAS[button.dataset.state];
-    resultCount.textContent = `Referencia de estado: ${button.dataset.state}`;
-  });
-});
+clearFilters.addEventListener('click', resetFilters);
 loadFilters();
 loadProducts();
