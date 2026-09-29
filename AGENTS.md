@@ -753,7 +753,7 @@ Objetivos:
 
 Estado:
 
-TERMINADA PARA REVISIÓN / PENDIENTE DE APROBACIÓN HUMANA
+APROBADA Y VERSIONADA
 
 Objetivos:
 
@@ -1043,13 +1043,13 @@ IMPLEMENTAR TODO EL ROADMAP
 
 # 29. Situación actual
 
-Las Etapas 1 a 8 están aprobadas y versionadas por el equipo humano, según la instrucción explícita del usuario del 29 de septiembre de 2026.
+Las Etapas 1 a 9 están finalizadas: fueron completadas, revisadas, aprobadas y versionadas por el equipo humano, según la instrucción explícita del usuario del 29 de septiembre de 2026.
 
 El reporte `reports/etapa-8.md` se conserva como evidencia histórica: documenta 89 pruebas Java y 16 pruebas de frontend exitosas y la limitación de verificación visual de aquel entorno. La aprobación posterior del usuario no implica que el agente haya producido nuevas capturas o comprobaciones visuales.
 
-La Etapa 9 — Documentación y entrega está implementada y pendiente de aprobación humana; no está aprobada ni versionada como etapa final. El README documenta requisitos, ejecución, arquitectura, API, decisiones, pruebas, evidencias, limitaciones, uso del agente y equipo de desarrollo. Las verificaciones finales constan en `reports/etapa-9.md`.
+La Etapa 9 — Documentación y entrega está aprobada y versionada por el equipo humano. El README documenta requisitos, ejecución, arquitectura, API, decisiones, pruebas, evidencias, limitaciones, uso del agente y equipo de desarrollo. Las verificaciones finales constan en `reports/etapa-9.md`.
 
-La Etapa 9 queda terminada para revisión, pendiente de aprobación humana. La tarea adicional autorizada el 29 de septiembre de 2026 consiste exclusivamente en actualizar este progreso y ajustar la paleta del frontend, sin cambiar estructura, funcionalidad, API ni comportamiento. Paleta: crema #F8F5ED, blanco #FFFFFF, verde petróleo #123C3A, coral #C24D32, mango #F5C84B solo como acento gráfico, menta #DCECE5 y verde grisáceo #506561. El ajuste visual también queda pendiente de revisión humana y sus verificaciones se registran en `reports/etapa-9.md`. No se ejecutan git add, commit ni push. El agente se detiene para revisión, sin aprobar automáticamente la entrega.
+La Etapa 9 está finalizada. La tarea adicional autorizada el 29 de septiembre de 2026 consistió exclusivamente en actualizar este progreso y ajustar la paleta del frontend, sin cambiar estructura, funcionalidad, API ni comportamiento. Paleta: crema #F8F5ED, blanco #FFFFFF, verde petróleo #123C3A, coral #C24D32, mango #F5C84B solo como acento gráfico, menta #DCECE5 y verde grisáceo #506561. Las verificaciones del ajuste visual se registran en `reports/etapa-9.md`. El cierre documental registra la aprobación y el versionado comunicados por el equipo humano. No se ejecutan git add, commit ni push en este cierre documental.
 
 ---
 

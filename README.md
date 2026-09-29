@@ -2,7 +2,16 @@
 
 Aplicación Full Stack del desafío de especialización: permite explorar los 4.032 productos entregados, buscar por nombre, combinar categoría y formato, navegar páginas y consultar el detalle. El backend resuelve búsqueda, filtros y paginación; la interfaz conserva el diseño esencial del mockup.
 
-Las Etapas 1 a 8 están aprobadas y versionadas por el equipo humano. La Etapa 9 se entrega para revisión, sin aprobación automática. Las reglas de trabajo están en [AGENTS.md](AGENTS.md).
+Las Etapas 1 a 9 fueron completadas, revisadas, aprobadas y versionadas por el equipo humano. Las reglas de trabajo están en [AGENTS.md](AGENTS.md).
+
+## Funcionalidades principales
+
+- Catálogo de 4.032 productos.
+- Búsqueda parcial por nombre.
+- Filtros combinables por categoría y formato.
+- Paginación de 8 productos.
+- Detalle de producto.
+- Estados Loading, Success, Empty y Error.
 
 ## Equipo de desarrollo
 
@@ -154,6 +163,6 @@ En un entorno restringido, si Node informa `spawn EPERM`, usar `node --test --te
 
 ## Uso del agente y preparación de entrega
 
-El trabajo asistido sigue las etapas y límites de AGENTS.md: analizar, implementar el alcance autorizado, probar, reportar y detenerse para revisión humana. El equipo humano aprueba y versiona cada etapa. En Etapa 9 el agente documenta el código existente, registra la aprobación comunicada de Etapas 1 a 8 y ejecuta verificaciones; no cambia lógica productiva ni datos.
+El trabajo asistido sigue las etapas y límites de AGENTS.md: analizar, implementar el alcance autorizado, probar, reportar y detenerse para revisión humana. El equipo humano aprueba y versiona cada etapa. En Etapa 9 el agente documentó el código existente y ejecutó verificaciones, sin cambiar lógica productiva ni datos. Las Etapas 1 a 9 están finalizadas; su revisión, aprobación y versionado fueron realizados por el equipo humano.
 
-Para revisar la entrega, consultar este README y el reporte de Etapa 9, reproducir las pruebas y revisar el diff. Para distribuir el ejecutable, generar el JAR con `verify` y acompañarlo del CSV original y estas instrucciones. El código fuente, Maven Wrapper y pruebas permanecen en el repositorio. No se ejecutan `git add`, `commit` ni `push` en esta tarea; la revisión y el versionado final quedan a cargo del equipo humano.
+Para revisar la entrega, consultar este README y el reporte de Etapa 9, reproducir las pruebas y revisar el diff. Para distribuir el ejecutable, generar el JAR con `verify` y acompañarlo del CSV original y estas instrucciones. El código fuente, Maven Wrapper y pruebas permanecen en el repositorio. La revisión, aprobación y el versionado final de las Etapas 1 a 9 fueron completados por el equipo humano. Este cierre documental registra ese estado sin ejecutar `git add`, `commit` ni `push`.
