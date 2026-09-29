@@ -33,7 +33,7 @@ Material original:
 
 El mockup representa una vitrina de productos.
 
-El frontend consulta el catálogo mediante la API. La Etapa 7 conecta los estados reales de interfaz y elimina los controles demostrativos; está pendiente de revisión y aprobación humana.
+El frontend consulta el catálogo mediante la API. La Etapa 7 conecta los estados reales de interfaz y elimina los controles demostrativos; está aprobada y versionada por el equipo humano.
 
 La aplicación final debe convertir este mockup en una aplicación Full Stack funcional.
 
@@ -473,7 +473,7 @@ Mostrar estado de error y opción:
 
 El diseño entregado debe conservarse en la medida de lo posible.
 
-La integración de datos reales de la Etapa 6 está aprobada y versionada. Los estados reales de la Etapa 7 están implementados y pendientes de revisión y aprobación humana.
+La integración de datos reales de la Etapa 6 está aprobada y versionada. Los estados reales de la Etapa 7 están aprobados y versionados por el equipo humano.
 
 Durante la integración deberá:
 
@@ -716,7 +716,7 @@ Objetivos:
 
 Estado:
 
-IMPLEMENTADA / PENDIENTE DE REVISIÓN Y APROBACIÓN HUMANA
+APROBADA Y VERSIONADA
 
 Implementar y verificar:
 
@@ -735,7 +735,7 @@ Eliminar controles puramente demostrativos cuando ya no sean necesarios.
 
 Estado:
 
-PENDIENTE
+PRUEBAS AUTOMATIZADAS EJECUTADAS / VERIFICACIÓN VISUAL PENDIENTE / PENDIENTE DE REVISIÓN HUMANA
 
 Objetivos:
 
@@ -1043,13 +1043,13 @@ IMPLEMENTAR TODO EL ROADMAP
 
 # 29. Situación actual
 
-El repositorio contiene el material original y las Etapas 1 a 6 aprobadas y versionadas por el equipo humano.
+El repositorio contiene el material original y las Etapas 1 a 7 aprobadas y versionadas por el equipo humano, según autorización explícita del usuario.
 
-La Etapa 7 — Estados de interfaz está implementada y pendiente de revisión y aprobación humana. Pasaron 87 pruebas Java y 11 pruebas de frontend, incluyendo estados, reintentos y limpieza de filtros. La verificación visual en escritorio y móvil permanece pendiente: el inventario del entorno no muestra navegadores conectados.
+La Etapa 8 — Testing integral es la única etapa autorizada en la tarea actual. Pasaron 89 pruebas Java y 16 pruebas de frontend, incluyendo el recorrido HTTP de las 504 páginas, regresión y casos límite. La verificación visual de escritorio y móvil permanece PENDIENTE: el inventario no muestra navegadores conectados y el navegador integrado no está disponible. La etapa no cumple aún todos los criterios de cierre. El detalle está en reports/etapa-8.md.
 
-Las Etapas 8 y 9 permanecen pendientes y no están autorizadas en la tarea actual.
+La Etapa 9 permanece pendiente y no está autorizada.
 
-El trabajo se detiene con el reporte de la Etapa 7 para revisión y aprobación humana, sin avanzar a la Etapa 8.
+Se entrega el reporte de la Etapa 8 con la limitación visual explícita y se detiene el trabajo para revisión humana, sin aprobar automáticamente la etapa ni avanzar a la Etapa 9.
 
 ---
 

@@ -239,3 +239,97 @@ test('demo controls are removed', () => {
   assert.doesNotMatch(html, /state-switch|data-state=/);
   assert.doesNotMatch(script, /PLANTILLAS|innerHTML/);
 });
+
+test('each search/filter control resets pagination and toolbar clear restores the catalog', async () => {
+  const ui = app(); await ui.settle();
+  for (const [id, event, value] of [['search', 'input', 'chocolate'],
+    ['category-filter', 'change', 'Huevos, leche y mantequilla'],
+    ['format-filter', 'change', '6 mini bricks x 200 ml']]) {
+    await ui.run('loadProducts(1)');
+    ui.nodes.get('#' + id).value = value;
+    ui.nodes.get('#' + id).dispatch(event); await ui.settle();
+    assert.equal(new URL(ui.requests.at(-1), base).searchParams.get('page'), '0');
+    assert.equal(ui.nodes.get('#clear-filters').disabled, false);
+  }
+  ui.nodes.get('#clear-filters').dispatch('click'); await ui.settle();
+  assert.equal(ui.requests.at(-1), '/api/products?page=0');
+  assert.equal(ui.nodes.get('#product-grid').dataset.state, 'success');
+  assert.equal(ui.nodes.get('#product-grid').children.length, 8);
+  assert.equal(ui.nodes.get('#clear-filters').disabled, true);
+  assert.equal(ui.nodes.get('#pagination').hidden, false);
+  assert.equal(ui.nodes.get('#previous-page').disabled, true);
+  assert.match(ui.nodes.get('#result-count').textContent, /1-8 de 4.032/);
+});
+
+test('numbered and previous navigation preserve selected filters', async () => {
+  const ui = app(); await ui.settle();
+  ui.nodes.get('#search').value = 'chocolate';
+  ui.nodes.get('#search').dispatch('input'); await ui.settle();
+  ui.nodes.get('.pages').children.find(node => node.attributes['aria-label'] === 'Ir a página 2').dispatch('click');
+  await ui.settle();
+  assert.equal(ui.requests.at(-1), '/api/products?page=1&search=chocolate');
+  assert.equal(ui.nodes.get('.pages').children.find(node => node.attributes['aria-current'] === 'page').textContent, 2);
+  ui.nodes.get('#previous-page').dispatch('click'); await ui.settle();
+  assert.equal(ui.requests.at(-1), '/api/products?page=0&search=chocolate');
+  assert.equal(ui.nodes.get('#previous-page').disabled, true);
+});
+
+test('malformed filters allow search and recover without partial options', async () => {
+  for (const invalid of [null, {categories:['A'], formats:[1]}, {categories:'A', formats:[]}]) {
+    let fail = true;
+    const ui = app(async url => response(url.endsWith('/filters')
+      ? fail ? invalid : {categories:['A'], formats:['B']} : emptyPage));
+    await ui.settle();
+    assert.equal(ui.nodes.get('#category-filter').disabled, true);
+    assert.equal(ui.nodes.get('#category-filter').children.length, 0);
+    ui.nodes.get('#search').value = 'leche';
+    ui.nodes.get('#search').dispatch('input'); await ui.settle();
+    assert.equal(ui.requests.at(-1), '/api/products?page=0&search=leche');
+    fail = false; clickAction(ui.nodes.get('#filter-status')); await ui.settle();
+    assert.equal(ui.nodes.get('#format-filter').disabled, false);
+    assert.equal(ui.nodes.get('#category-filter').children.length, 1);
+    assert.equal(ui.nodes.get('#filter-status').hidden, true);
+  }
+});
+
+test('stale failures cannot replace a newer successful list or detail', async () => {
+  const queue = [];
+  const ui = app(url => url.endsWith('/filters') ? Promise.resolve(response({categories:[], formats:[]}))
+    : new Promise((resolve, reject) => queue.push({resolve, reject})));
+  ui.run('loadProducts(1)');
+  queue[1].resolve(response({...emptyPage, page:1}));
+  await new Promise(resolve => setImmediate(resolve));
+  queue[0].reject(new Error('old list failure')); await ui.settle();
+  assert.equal(ui.nodes.get('#product-grid').dataset.state, 'empty');
+  assert.equal(ui.run('currentPage.page'), 1);
+  ui.run("openDetail('12049.1')"); ui.run("openDetail('12049.2')");
+  queue[3].resolve(response({id:'12049.2', name:'Latest', category:'A', format:'B', price:10,
+    originalPrice:10, currency:'CLP', imageUrl:'https://example.test/image', productUrl:'https://example.test/product'}));
+  await new Promise(resolve => setImmediate(resolve));
+  queue[2].reject(new Error('old detail failure')); await ui.settle();
+  assert.equal(ui.nodes.get('#detail-title').textContent, 'Latest');
+  assert.equal(ui.nodes.get('#detail-status').hidden, true);
+  assert.equal(ui.errors.length, 0);
+});
+
+test('detail image fallback is removed for the next product and unsafe links stay hidden', async () => {
+  const ui = app(); await ui.settle();
+  await ui.run("openDetail('12049.1')");
+  const image = ui.nodes.get('#detail-image');
+  image.onerror();
+  assert.equal(image.hidden, true);
+  assert.ok(image.parentElement.querySelector('.image-fallback'));
+  await ui.run("openDetail('12049.2')");
+  assert.equal(image.hidden, false);
+  assert.equal(image.parentElement.querySelector('.image-fallback'), undefined);
+  ui.run("setImage(document.querySelector('#detail-image'), {name:'Unsafe', imageUrl:'javascript:alert(1)'})");
+  assert.equal(image.hidden, true);
+  assert.ok(image.parentElement.querySelector('.image-fallback'));
+  const unsafe = app(async url => response(url.endsWith('/filters') ? {categories:[], formats:[]}
+    : url.includes('/api/products/') ? {id:'x', name:'<script>alert(1)</script>', description:'<b>text</b>',
+      category:'A', price:10, originalPrice:10, currency:'CLP', productUrl:'javascript:alert(1)'} : emptyPage));
+  await unsafe.settle(); await unsafe.run("openDetail('x')");
+  assert.equal(unsafe.nodes.get('#detail-source').hidden, true);
+  assert.equal(unsafe.nodes.get('#detail-title').textContent, '<script>alert(1)</script>');
+  assert.equal(unsafe.nodes.get('#detail-description').textContent, '<b>text</b>');
+});

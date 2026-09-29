@@ -18,6 +18,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,6 +37,44 @@ class ProductApiTests {
         assertPage(json, 0, 4032, 504, false, true);
         assertThat(json.<List<String>>read("$.items[*].id")).containsExactlyElementsOf(
                 repository.findAll().subList(0, 8).stream().map(Product::id).toList());
+    }
+
+    @Test
+    void everyHttpPagePreservesAll4032IdsWithoutGapsOrDuplicates() throws Exception {
+        List<String> ids = new ArrayList<>();
+        for (int page = 0; page < 504; page++) {
+            var json = get("?page=" + page, 200);
+            assertPage(json, page, 4032, 504, page > 0, page < 503);
+            List<String> pageIds = json.read("$.items[*].id");
+            assertThat(pageIds).hasSize(8);
+            ids.addAll(pageIds);
+        }
+        assertThat(ids).hasSize(4032).doesNotHaveDuplicates().containsExactlyElementsOf(
+                repository.findAll().stream().map(Product::id).toList());
+    }
+
+    @Test
+    void combinedFiltersRemainConsistentAcrossEveryMatchingHttpPage() throws Exception {
+        Product sample = repository.findById("12049.1").orElseThrow();
+        String search = sample.name().substring(0, 3).toUpperCase(Locale.ROOT);
+        var expected = repository.findAll().stream()
+                .filter(p -> p.name().toUpperCase(Locale.ROOT).contains(search))
+                .filter(p -> p.categoryGroup().equals(sample.categoryGroup()))
+                .filter(p -> p.format().equals(sample.format())).map(Product::id).toList();
+        assertThat(expected).isNotEmpty();
+        String query = "?search=" + encode(search) + "&category=" + encode(sample.categoryGroup())
+                + "&format=" + encode(sample.format());
+        int pages = (expected.size() + 7) / 8;
+        List<String> ids = new ArrayList<>();
+        for (int page = 0; page < pages; page++) {
+            var json = get(query + "&page=" + page, 200);
+            assertPage(json, page, expected.size(), pages, page > 0, page + 1 < pages);
+            ids.addAll(json.<List<String>>read("$.items[*].id"));
+        }
+        assertThat(ids).containsExactlyElementsOf(expected);
+        var beyond = get(query + "&page=" + pages, 200);
+        assertPage(beyond, pages, expected.size(), pages, true, false);
+        assertThat(beyond.<List<?>>read("$.items")).isEmpty();
     }
 
     @ParameterizedTest
