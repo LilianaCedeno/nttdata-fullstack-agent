@@ -735,7 +735,7 @@ Eliminar controles puramente demostrativos cuando ya no sean necesarios.
 
 Estado:
 
-PRUEBAS AUTOMATIZADAS EJECUTADAS / VERIFICACIÓN VISUAL PENDIENTE / PENDIENTE DE REVISIÓN HUMANA
+APROBADA Y VERSIONADA
 
 Objetivos:
 
@@ -753,7 +753,7 @@ Objetivos:
 
 Estado:
 
-PENDIENTE
+TERMINADA PARA REVISIÓN / PENDIENTE DE APROBACIÓN HUMANA
 
 Objetivos:
 
@@ -1043,13 +1043,13 @@ IMPLEMENTAR TODO EL ROADMAP
 
 # 29. Situación actual
 
-El repositorio contiene el material original y las Etapas 1 a 7 aprobadas y versionadas por el equipo humano, según autorización explícita del usuario.
+Las Etapas 1 a 8 están aprobadas y versionadas por el equipo humano, según la instrucción explícita del usuario del 29 de septiembre de 2026.
 
-La Etapa 8 — Testing integral es la única etapa autorizada en la tarea actual. Pasaron 89 pruebas Java y 16 pruebas de frontend, incluyendo el recorrido HTTP de las 504 páginas, regresión y casos límite. La verificación visual de escritorio y móvil permanece PENDIENTE: el inventario no muestra navegadores conectados y el navegador integrado no está disponible. La etapa no cumple aún todos los criterios de cierre. El detalle está en reports/etapa-8.md.
+El reporte `reports/etapa-8.md` se conserva como evidencia histórica: documenta 89 pruebas Java y 16 pruebas de frontend exitosas y la limitación de verificación visual de aquel entorno. La aprobación posterior del usuario no implica que el agente haya producido nuevas capturas o comprobaciones visuales.
 
-La Etapa 9 permanece pendiente y no está autorizada.
+La Etapa 9 — Documentación y entrega está implementada y pendiente de aprobación humana; no está aprobada ni versionada como etapa final. El README documenta requisitos, ejecución, arquitectura, API, decisiones, pruebas, evidencias, limitaciones, uso del agente y equipo de desarrollo. Las verificaciones finales constan en `reports/etapa-9.md`.
 
-Se entrega el reporte de la Etapa 8 con la limitación visual explícita y se detiene el trabajo para revisión humana, sin aprobar automáticamente la etapa ni avanzar a la Etapa 9.
+La Etapa 9 queda terminada para revisión, pendiente de aprobación humana. La tarea adicional autorizada el 29 de septiembre de 2026 consiste exclusivamente en actualizar este progreso y ajustar la paleta del frontend, sin cambiar estructura, funcionalidad, API ni comportamiento. Paleta: crema #F8F5ED, blanco #FFFFFF, verde petróleo #123C3A, coral #C24D32, mango #F5C84B solo como acento gráfico, menta #DCECE5 y verde grisáceo #506561. El ajuste visual también queda pendiente de revisión humana y sus verificaciones se registran en `reports/etapa-9.md`. No se ejecutan git add, commit ni push. El agente se detiene para revisión, sin aprobar automáticamente la entrega.
 
 ---
 
