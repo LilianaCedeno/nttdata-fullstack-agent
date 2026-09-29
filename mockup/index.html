@@ -24,7 +24,7 @@
           <h1 id="catalog-title">Todo lo que necesitas, en un solo lugar</h1>
           <p class="lead">Explora el catálogo, filtra por categoría o formato y revisa la información de cada producto.</p>
         </div>
-        <span class="result-count" id="result-count">Mostrando 1-8 de 4.032</span>
+        <span class="result-count" id="result-count"></span>
       </section>
 
       <section class="toolbar" aria-label="Herramientas del catálogo">
@@ -38,27 +38,12 @@
             <span class="sr-only">Categoría</span>
             <select id="category-filter">
               <option value="">Todas las categorías</option>
-              <option value="Aceite, especias y salsas">Aceite, especias y salsas</option>
-              <option value="Agua y refrescos">Agua y refrescos</option>
-              <option value="Aperitivos">Aperitivos</option>
-              <option value="Azúcar, caramelos y chocolate">Azúcar, caramelos y chocolate</option>
-              <option value="Bodega">Bodega</option>
-              <option value="Cacao, café e infusiones">Cacao, café e infusiones</option>
-              <option value="Carne">Carne</option>
-              <option value="Huevos, leche y mantequilla">Huevos, leche y mantequilla</option>
             </select>
           </label>
           <label>
             <span class="sr-only">Formato</span>
             <select id="format-filter">
               <option value="">Todos los formatos</option>
-              <option value="6 mini bricks x 200 ml">6 mini bricks x 200 ml</option>
-              <option value="Bandeja">Bandeja</option>
-              <option value="Bote">Bote</option>
-              <option value="Botella">Botella</option>
-              <option value="Lata">Lata</option>
-              <option value="Paquete">Paquete</option>
-              <option value="Tarro">Tarro</option>
             </select>
           </label>
         </div>
@@ -66,12 +51,11 @@
 
       <section class="product-grid" id="product-grid" aria-live="polite"></section>
 
-      <nav class="pagination" aria-label="Paginación de ejemplo">
-        <button type="button" disabled>← Anterior</button>
+      <nav class="pagination" aria-label="Paginación del catálogo">
+        <button id="previous-page" type="button" disabled>← Anterior</button>
         <div class="pages" aria-label="Página actual">
-          <span class="active">1</span><span>2</span><span>3</span><span>…</span><span>504</span>
         </div>
-        <button type="button">Siguiente →</button>
+        <button id="next-page" type="button" disabled>Siguiente →</button>
       </nav>
 
       <section class="state-switch" aria-label="Referencia de estados de la interfaz">

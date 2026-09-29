@@ -33,7 +33,7 @@ Material original:
 
 El mockup representa una vitrina de productos.
 
-Actualmente utiliza una muestra local de productos y simula parte de las funcionalidades.
+El frontend ya consulta el catálogo mediante la API. Los estados demostrativos permanecen pendientes de sustitución en la Etapa 7.
 
 La aplicación final debe convertir este mockup en una aplicación Full Stack funcional.
 
@@ -473,7 +473,7 @@ Mostrar estado de error y opción:
 
 El diseño entregado debe conservarse en la medida de lo posible.
 
-Actualmente el mockup utiliza productos locales y estados demostrativos.
+La integración de datos reales está implementada en la Etapa 6, pendiente de revisión humana. Los estados demostrativos permanecen para la Etapa 7.
 
 Durante la integración deberá:
 
@@ -609,7 +609,7 @@ Incluye:
 
 Estado:
 
-EN IMPLEMENTACIÓN / PENDIENTE DE REVISIÓN
+APROBADA Y VERSIONADA
 
 Objetivos:
 
@@ -628,7 +628,7 @@ NO implementar todavía lógica de productos.
 
 Estado:
 
-PENDIENTE
+APROBADA Y VERSIONADA
 
 Objetivos:
 
@@ -646,7 +646,7 @@ Objetivos:
 
 Estado:
 
-PENDIENTE
+APROBADA Y VERSIONADA
 
 Objetivos:
 
@@ -662,7 +662,7 @@ Objetivos:
 
 Estado:
 
-PENDIENTE
+APROBADA Y VERSIONADA
 
 Objetivos:
 
@@ -680,7 +680,7 @@ Objetivos:
 
 Estado:
 
-PENDIENTE
+APROBADA Y VERSIONADA
 
 Objetivos:
 
@@ -698,7 +698,7 @@ Objetivos:
 
 Estado:
 
-PENDIENTE
+IMPLEMENTADA / PENDIENTE DE REVISIÓN Y APROBACIÓN HUMANA
 
 Objetivos:
 
@@ -1043,27 +1043,13 @@ IMPLEMENTAR TODO EL ROADMAP
 
 # 29. Situación actual
 
-El repositorio ya contiene el material original versionado.
+El repositorio contiene el material original y las Etapas 1 a 5 aprobadas y versionadas por el equipo humano.
 
-La creación inicial del proyecto Spring Boot/Maven fue solicitada y actualmente existen cambios no versionados correspondientes a:
+La Etapa 6 — Integración frontend está implementada y pendiente de revisión y aprobación humana. Las pruebas automatizadas fueron ejecutadas; la verificación visual en escritorio y móvil está pendiente por falta de un navegador conectado en el entorno.
 
-- `.mvn/`
-- `mvnw`
-- `mvnw.cmd`
-- `pom.xml`
-- `src/`
+Las Etapas 7 a 9 permanecen pendientes y no están autorizadas en la tarea actual.
 
-Por lo tanto:
-
-**NO recrear la Etapa 1 desde cero.**
-
-Primero inspeccionar la implementación existente de Etapa 1, compilar/probar y generar su REPORTE DE ETAPA.
-
-La Etapa 1 permanece:
-
-`PENDIENTE DE REVISIÓN Y APROBACIÓN HUMANA`
-
-hasta que el equipo la apruebe.
+El trabajo se detiene con el reporte de la Etapa 6 para revisión y aprobación humana, sin avanzar a la Etapa 7.
 
 ---
 

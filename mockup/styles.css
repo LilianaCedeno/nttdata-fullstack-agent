@@ -84,3 +84,19 @@ select { min-height:42px; border:1px solid var(--line); border-radius:11px; back
 .state-switch-buttons button:hover { border-color:var(--ink); }
 .state-switch-buttons button.on { background:var(--ink); border-color:var(--ink); color:white; font-weight:600; }
 .state-switch-note { margin:12px 0 0; font-size:13px; color:var(--muted); }
+
+/* Real catalog values may be longer than the original sample. */
+.filters { min-width:0; max-width:65%; }
+.filters label { min-width:0; }
+.filters select { width:100%; max-width:100%; }
+.detail-list dd { overflow-wrap:anywhere; }
+.image-fallback { display:grid; place-items:center; width:100%; height:100%; padding:20px; color:var(--muted); text-align:center; }
+.pages button { min-width:34px; height:34px; border-radius:9px; cursor:pointer; }
+.image-wrap img,.detail-image img { object-fit:contain; }
+@media (max-width:900px) { .filters { max-width:100%; } }
+@media (max-width:560px) {
+  .pages { gap:1px; }
+  .pages button { min-width:26px; padding:0 4px; font-size:12px; }
+  .pages button::first-letter { font-size:12px; }
+  .pages span { min-width:12px; }
+}
