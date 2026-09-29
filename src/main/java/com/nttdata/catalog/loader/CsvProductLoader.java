@@ -5,6 +5,7 @@ import com.nttdata.catalog.model.Product;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 /** Parses and validates a CSV on demand. Startup storage belongs to the repository stage. */
+@Component
 public class CsvProductLoader {
 
     private static final List<String> HEADERS = List.of(
